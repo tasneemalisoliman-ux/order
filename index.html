@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Form | نموذج الطلب</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Barlow:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1a3a5c;
+    --accent: #e8a020;
+    --accent2: #2e7d9e;
+    --bg: #f4f6f9;
+    --card: #ffffff;
+    --border: #dde3ec;
+    --text: #1e2d3d;
+    --muted: #7a8fa6;
+    --success: #2a9d5c;
+    --danger: #e53e3e;
+    --row-odd: #f9fbfd;
+    --row-even: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    direction: rtl;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, var(--primary) 0%, #0f2540 100%);
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  .header-title {
+    color: white;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+  }
+  .header-title span {
+    color: var(--accent);
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    font-family: 'Barlow', sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .header-badge {
+    background: var(--accent);
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-family: 'Barlow', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* Main Container */
+  .container {
+    max-width: 820px;
+    margin: 36px auto;
+    padding: 0 20px 60px;
+  }
+
+  /* Card */
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+  }
+  .card-header {
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent2) 100%);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-header .icon {
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .card-header h2 {
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .card-header h2 span {
+    color: rgba(255,255,255,0.65);
+    font-size: 11px;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    letter-spacing: 1px;
+    margin-right: 8px;
+  }
+  .card-body { padding: 24px; }
+
+  /* Form Grid */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .form-grid.full { grid-template-columns: 1fr; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .field label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-family: 'Barlow', sans-serif;
+  }
+  .field label .ar {
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 600;
+    color: var(--text);
+    margin-right: 6px;
+  }
+  .field label .required { color: var(--danger); margin-right: 3px; }
+
+  input[type="date"],
+  input[type="number"],
+  input[type="text"],
+  select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: white;
+    transition: all 0.2s;
+    outline: none;
+    direction: rtl;
+  }
+  input:focus, select:focus {
+    border-color: var(--accent2);
+    box-shadow: 0 0 0 3px rgba(46,125,158,0.1);
+  }
+  input[type="number"] { font-family: 'Barlow', sans-serif; font-size: 15px; text-align: center; }
+
+  /* Readonly field */
+  .readonly-field {
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    background: #f0f4f8;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  /* Products Table */
+  .products-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  .products-table thead tr {
+    background: var(--primary);
+    color: white;
+  }
+  .products-table thead th {
+    padding: 12px 14px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  .products-table thead th .ar {
+    display: block;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  .products-table thead th .en {
+    display: block;
+    font-family: 'Barlow', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    opacity: 0.7;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .products-table tbody tr:nth-child(odd) { background: var(--row-odd); }
+  .products-table tbody tr:nth-child(even) { background: var(--row-even); }
+  .products-table tbody tr { transition: background 0.15s; }
+  .products-table tbody tr:hover { background: #eaf4fb; }
+
+  .products-table td {
+    padding: 10px 10px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .product-name {
+    font-weight: 600;
+    font-size: 13px;
+    text-align: right;
+    padding-right: 16px !important;
+    color: var(--primary);
+  }
+  .product-name .en-name {
+    display: block;
+    font-size: 11px;
+    font-family: 'Barlow', sans-serif;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .products-table input[type="number"] {
+    width: 90px;
+    padding: 8px 6px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+  }
+  .products-table input[type="number"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(232,160,32,0.15);
+  }
+
+  .total-cell {
+    font-weight: 700;
+    color: var(--success);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+  }
+
+  /* Grand Total */
+  .grand-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: linear-gradient(90deg, var(--primary), var(--accent2));
+    border-radius: 12px;
+    margin-top: 16px;
+  }
+  .grand-total .label {
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .grand-total .label span {
+    font-family: 'Barlow', sans-serif;
+    font-size: 11px;
+    opacity: 0.7;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .grand-total .amount {
+    color: var(--accent);
+    font-size: 24px;
+    font-weight: 900;
+    font-family: 'Barlow', sans-serif;
+  }
+
+  /* Submit */
+  .submit-area {
+    text-align: center;
+    padding: 10px 0 0;
+  }
+  .btn-submit {
+    background: linear-gradient(135deg, var(--accent) 0%, #c87d10 100%);
+    color: white;
+    border: none;
+    padding: 16px 60px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(232,160,32,0.35);
+    transition: all 0.25s;
+    letter-spacing: 0.5px;
+  }
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(232,160,32,0.45);
+  }
+  .btn-submit:active { transform: translateY(0); }
+
+  /* Success */
+  .success-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,30,50,0.7);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+  }
+  .success-overlay.show { display: flex; }
+  .success-box {
+    background: white;
+    border-radius: 20px;
+    padding: 50px 40px;
+    text-align: center;
+    max-width: 380px;
+    width: 90%;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+    animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .success-icon {
+    width: 70px; height: 70px;
+    background: linear-gradient(135deg, #2a9d5c, #1e7a46);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 20px;
+    box-shadow: 0 8px 20px rgba(42,157,92,0.3);
+  }
+  .success-box h3 { font-size: 20px; font-weight: 900; color: var(--primary); margin-bottom: 8px; }
+  .success-box p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+  .btn-new { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 30px; font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .btn-new:hover { background: var(--accent2); }
+
+  /* CSV Export */
+  .export-area { text-align: center; margin-top: 12px; }
+  .btn-export {
+    background: transparent;
+    color: var(--accent2);
+    border: 2px solid var(--accent2);
+    padding: 10px 28px;
+    border-radius: 30px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .btn-export:hover { background: var(--accent2); color: white; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .header { padding: 20px; }
+    .container { padding: 0 12px 40px; }
+    .products-table input[type="number"] { width: 70px; }
+  }
+
+  /* Animate in */
+  .card { animation: fadeUp 0.4s ease both; }
+  .card:nth-child(2) { animation-delay: 0.1s; }
+  .card:nth-child(3) { animation-delay: 0.2s; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">
+    <span>Sales Order System</span>
+    نظام طلبات المبيعات
+  </div>
+  <div class="header-badge">Internal Use Only</div>
+</div>
+
+<div class="container">
+
+  <!-- Card 1: Basic Info -->
+  <div class="card">
+    <div class="card-header">
+      <div class="icon">📋</div>
+      <h2>معلومات الطلب <span>Order Information</span></h2>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+
+        <div class="field">
+          <label><span class="ar">تاريخ الطلب</span> Order Date <span class="required">*</span></label>
+          <input type="date" id="orderDate" required>
+        </div>
+
+        <div class="field">
+          <label><span class="ar">مدة التسليم</span> Delivery Duration</label>
+          <div class="readonly-field">10-15 يوم &nbsp;|&nbsp; 10-15 Days</div>
+        </div>
+
+        <div class="field">
+          <label><span class="ar">اسم المندوب</span> Sales Representative <span class="required">*</span></label>
+          <select id="salesRep" required>
+            <option value="">-- اختر المندوب | Select Rep --</option>
+            <option value="Osama | أسامة">Osama | أسامة</option>
+            <option value="Mahbob | محبوب">Mahbob | محبوب</option>
+            <option value="Mahmoud Gebriel | محمود جبريل">Mahmoud Gebriel | محمود جبريل</option>
+            <option value="Burhan | برهان">Burhan | برهان</option>
+          </select>
+        </div>
+
+        <div class="field" style="position:relative;">
+          <label><span class="ar">اسم العميل</span> Customer Name <span class="required">*</span></label>
+          <input type="text" id="customerName" placeholder="اكتب اسم العميل... | Type customer name..."
+            autocomplete="off" oninput="filterCustomers()" onfocus="showDropdown()" onblur="hideDropdown()" required
+            style="padding-left: 36px;">
+          <span style="position:absolute; left:12px; bottom:11px; color:var(--muted); font-size:15px; pointer-events:none;">🔍</span>
+          <div id="customerDropdown" style="
+            display:none; position:absolute; top:100%; right:0; left:0; z-index:100;
+            background:white; border:1.5px solid var(--accent2); border-top:none;
+            border-radius:0 0 10px 10px; max-height:200px; overflow-y:auto;
+            box-shadow:0 8px 20px rgba(0,0,0,0.12);">
+          </div>
+          <div style="margin-top:5px; font-size:11px; color:var(--muted); font-family:'Barlow',sans-serif;">
+            💡 اكتب اسم جديد وسيُحفظ تلقائياً | New names are saved automatically
+          </div>
+        </div>
+
+        <div class="field">
+          <label><span class="ar">حالة الكليشة</span> Cliché Status <span class="required">*</span></label>
+          <select id="clicheStatus" required>
+            <option value="">-- اختر الحالة | Select Status --</option>
+            <option value="جاري التحضير | In Preparation">جاري التحضير | In Preparation</option>
+            <option value="في المصنع | At Factory">في المصنع | At Factory</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- Notes field full width -->
+      <div style="margin-top: 18px;">
+        <div class="field">
+          <label><span class="ar">ملاحظات</span> Notes</label>
+          <textarea id="notes" rows="3" placeholder="أي ملاحظات إضافية... | Any additional notes..."
+            style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px;
+            font-family:'Cairo',sans-serif; font-size:14px; color:var(--text); background:white;
+            resize:vertical; outline:none; transition:all 0.2s; direction:rtl;"
+            onfocus="this.style.borderColor='var(--accent2)'; this.style.boxShadow='0 0 0 3px rgba(46,125,158,0.1)'"
+            onblur="this.style.borderColor='var(--border)'; this.style.boxShadow='none'"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Card 2: Products Table -->
+  <div class="card">
+    <div class="card-header">
+      <div class="icon">📦</div>
+      <h2>تفاصيل الطلب <span>Order Details</span></h2>
+    </div>
+    <div class="card-body" style="padding: 16px;">
+      <table class="products-table" id="productsTable">
+        <thead>
+          <tr>
+            <th style="text-align:right; padding-right:16px;">
+              <span class="ar">المنتج</span>
+              <span class="en">Product</span>
+            </th>
+            <th>
+              <span class="ar">الكمية</span>
+              <span class="en">Qty</span>
+            </th>
+            <th>
+              <span class="ar">السعر</span>
+              <span class="en">Price</span>
+            </th>
+            <th>
+              <span class="ar">الإجمالي</span>
+              <span class="en">Total</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="productRows">
+          <!-- Rows injected by JS -->
+        </tbody>
+      </table>
+
+      <div class="grand-total">
+        <div class="label">
+          <span>Grand Total | الإجمالي الكلي</span>
+          المبلغ الإجمالي
+        </div>
+        <div class="amount" id="grandTotal">0.00</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="submit-area">
+    <button class="btn-submit" onclick="submitForm()">
+      ✅ &nbsp; تأكيد الطلب &nbsp;|&nbsp; Submit Order
+    </button>
+  </div>
+  <div class="export-area">
+    <button class="btn-export" onclick="exportCSV()">
+      ⬇️ &nbsp; تصدير Excel / CSV
+    </button>
+  </div>
+
+</div>
+
+<!-- Success Overlay -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-box">
+    <div class="success-icon">✓</div>
+    <h3>تم إرسال الطلب! | Order Submitted!</h3>
+    <p>تم تسجيل الطلب بنجاح وسيظهر في الشيت فوراً.<br>Order recorded successfully.</p>
+    <button class="btn-new" onclick="resetForm()">طلب جديد | New Order</button>
+  </div>
+</div>
+
+<script>
+// =====================
+// Products Data
+// =====================
+const products = [
+  { en: "Saco Cup 16oz Clear",                unit: "pc/ctn", needsCompany: false },
+  { en: "Saco Cup 12oz Clear",                unit: "pc/ctn", needsCompany: false },
+  { en: "Saco Cup 22oz Clear",                unit: "pc/ctn", needsCompany: false },
+  { en: "Saco Cup 16oz Printed",              unit: "ctn",    needsCompany: false  },
+  { en: "Saco Cup 12oz Printed",              unit: "ctn",    needsCompany: false  },
+  { en: "Saco Cup 22oz Printed",              unit: "ctn",    needsCompany: false  },
+  { en: "PET Cup 400ml U-Shape Printed",      unit: "pcs",    needsCompany: false  },
+  { en: "PET Cup 500ml U-Shape Printed",      unit: "pcs",    needsCompany: false  },
+  { en: "PET Cup 700ml U-Shape Printed",      unit: "pcs",    needsCompany: false  },
+  { en: "PET Cup 400ml (14oz) Printed",       unit: "pcs",    needsCompany: false  },
+  { en: "Frosted Cup 360ml U-Shape Printed",  unit: "pcs",    needsCompany: false  },
+  { en: "Frosted Cup 500ml U-Shape Printed",  unit: "pcs",    needsCompany: false  },
+  { en: "Frosted Cup 700ml U-Shape Printed",  unit: "pcs",    needsCompany: false  },
+  { en: "Frosted Cup 360ml Printed",          unit: "pcs",    needsCompany: false  },
+  { en: "Frosted Cup 500ml Printed",          unit: "pcs",    needsCompany: false  },
+  { en: "Frosted Cup 700ml Printed",          unit: "pcs",    needsCompany: false  },
+  { en: "Saco Ice Cream Cup 8oz",             unit: "pcs",    needsCompany: false },
+  { en: "Saco Ice Cream Cup 8oz Printed",     unit: "pcs",    needsCompany: false  },
+];
+
+// =====================
+// Build Table Rows
+// =====================
+function buildTable() {
+  const tbody = document.getElementById('productRows');
+  tbody.innerHTML = '';
+  products.forEach((p, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="product-name">
+        ${p.en}
+        <span class="en-name" style="color:var(--accent); font-weight:600;">${p.unit}</span>
+        ${p.needsCompany ? `
+        <div style="margin-top:5px; position:relative;">
+          <input type="text" id="company_${i}" placeholder="Company name..."
+            autocomplete="off"
+            oninput="filterCompanies(${i})"
+            onfocus="showCompanyDropdown(${i})"
+            onblur="hideCompanyDropdown(${i})"
+            style="width:100%; padding:5px 8px; font-size:11px; border:1.5px solid var(--border);
+            border-radius:6px; font-family:'Barlow',sans-serif; color:var(--text); outline:none;"
+            onfocus2="this.style.borderColor='var(--accent2)'"
+          >
+          <div id="companyDrop_${i}" style="display:none; position:absolute; top:100%; right:0; left:0;
+            z-index:200; background:white; border:1.5px solid var(--accent2); border-top:none;
+            border-radius:0 0 8px 8px; max-height:140px; overflow-y:auto;
+            box-shadow:0 6px 16px rgba(0,0,0,0.1); font-size:12px;"></div>
+        </div>` : ''}
+      </td>
+      <td>
+        <input type="number" id="qty_${i}" min="0" placeholder="0"
+          oninput="calcRow(${i})" value="">
+      </td>
+      <td>
+        <input type="number" id="price_${i}" min="0" step="0.01" placeholder="0.00"
+          oninput="calcRow(${i})" value="">
+      </td>
+      <td class="total-cell" id="total_${i}">—</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// =====================
+// Calculate Row Total
+// =====================
+function calcRow(i) {
+  const qty   = parseFloat(document.getElementById(`qty_${i}`).value)   || 0;
+  const price = parseFloat(document.getElementById(`price_${i}`).value) || 0;
+  const total = qty * price;
+  const cell  = document.getElementById(`total_${i}`);
+  cell.textContent = total > 0 ? total.toFixed(2) : '—';
+  calcGrandTotal();
+}
+
+function calcGrandTotal() {
+  let grand = 0;
+  products.forEach((_, i) => {
+    const qty   = parseFloat(document.getElementById(`qty_${i}`).value)   || 0;
+    const price = parseFloat(document.getElementById(`price_${i}`).value) || 0;
+    grand += qty * price;
+  });
+  document.getElementById('grandTotal').textContent = grand.toFixed(2);
+}
+
+// =====================
+// Set today's date
+// =====================
+function setToday() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('orderDate').value = today;
+}
+
+// =====================
+// Submit
+// =====================
+function submitForm() {
+  const date     = document.getElementById('orderDate').value;
+  const rep      = document.getElementById('salesRep').value;
+  const customer = document.getElementById('customerName').value;
+  const cliche   = document.getElementById('clicheStatus').value;
+  const notes    = document.getElementById('notes').value;
+
+  if (!date || !rep || !customer || !cliche) {
+    alert('يرجى تعبئة جميع الحقول الإلزامية |\nPlease fill all required fields.');
+    return;
+  }
+
+  // Save customer for future autocomplete
+  saveCustomer(customer);
+
+  // Build data array for export
+  const rows = [];
+  products.forEach((p, i) => {
+    const qty   = document.getElementById(`qty_${i}`).value;
+    const price = document.getElementById(`price_${i}`).value;
+    if (qty && parseFloat(qty) > 0) {
+      const companyEl = document.getElementById(`company_${i}`);
+      const companyVal = companyEl ? companyEl.value.trim() : '';
+      if (companyVal) saveCompany(companyVal);
+      rows.push({
+        date, rep, customer, cliche,
+        delivery: '10-15 Days | يوم',
+        product: `${p.en}${companyVal ? ' - ' + companyVal : ''} (${p.unit})`,
+        qty, price,
+        total: (parseFloat(qty) * parseFloat(price)).toFixed(2),
+        notes
+      });
+    }
+  });
+
+  if (rows.length === 0) {
+    alert('يرجى إدخال كمية لمنتج واحد على الأقل |\nPlease enter at least one product quantity.');
+    return;
+  }
+
+  // Save to localStorage for CSV export
+  const existing = JSON.parse(localStorage.getItem('orders') || '[]');
+  rows.forEach(r => existing.push(r));
+  localStorage.setItem('orders', JSON.stringify(existing));
+
+  // Send to Google Sheets
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0omZe6sZMD7Ht3lEtNQknMTS7LRms8O61LWu91_79f7nRc2WijgIrp_X3acbUsS40QQ/exec';
+  const btn = document.querySelector('.btn-submit');
+  btn.innerHTML = '⏳ &nbsp; جاري الإرسال...';
+  btn.disabled = true;
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ rows })
+  })
+  .finally(() => {
+    btn.innerHTML = '\u2705 &nbsp; \u062a\u0623\u0643\u064a\u062f \u0627\u0644\u0637\u0644\u0628 &nbsp;|&nbsp; Submit Order';
+    btn.disabled = false;
+    document.getElementById('successOverlay').classList.add('show');
+  });
+}
+
+// =====================
+// Reset
+// =====================
+function resetForm() {
+  document.getElementById('successOverlay').classList.remove('show');
+  document.getElementById('salesRep').value = '';
+  document.getElementById('customerName').value = '';
+  document.getElementById('clicheStatus').value = '';
+  document.getElementById('notes').value = '';
+  setToday();
+  buildTable();
+  document.getElementById('grandTotal').textContent = '0.00';
+}
+
+// =====================
+// Export CSV
+// =====================
+function exportCSV() {
+  const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+  if (orders.length === 0) {
+    alert('لا توجد طلبات بعد | No orders yet. Submit an order first.');
+    return;
+  }
+
+  const headers = [
+    'Order Date | تاريخ الطلب',
+    'Sales Rep | المندوب',
+    'Customer | العميل',
+    'Cliché Status | حالة الكليشة',
+    'Delivery | التسليم',
+    'Product | المنتج',
+    'Qty | الكمية',
+    'Price | السعر',
+    'Total | الإجمالي',
+    'Notes | ملاحظات'
+  ];
+
+  const csvRows = [headers.join(',')];
+  orders.forEach(o => {
+    csvRows.push([
+      o.date, `"${o.rep}"`, `"${o.customer}"`, `"${o.cliche || ''}"`, `"${o.delivery}"`,
+      `"${o.product}"`, o.qty, o.price, o.total, `"${o.notes || ''}"`
+    ].join(','));
+  });
+
+  const blob = new Blob(['\uFEFF' + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `orders_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+}
+
+// =====================
+// Company Name Autocomplete (per product)
+// =====================
+let companies = JSON.parse(localStorage.getItem('companies') || '[]');
+
+function saveCompany(name) {
+  name = name.trim();
+  if (name && !companies.includes(name)) {
+    companies.push(name);
+    companies.sort();
+    localStorage.setItem('companies', JSON.stringify(companies));
+  }
+}
+
+function filterCompanies(i) {
+  const val = document.getElementById(`company_${i}`).value.trim();
+  const filtered = val.length === 0
+    ? companies
+    : companies.filter(c => c.toLowerCase().includes(val.toLowerCase()));
+  renderCompanyDropdown(i, filtered, val);
+}
+
+function showCompanyDropdown(i) {
+  const val = document.getElementById(`company_${i}`).value.trim();
+  const filtered = val.length === 0 ? companies : companies.filter(c => c.toLowerCase().includes(val.toLowerCase()));
+  renderCompanyDropdown(i, filtered, val);
+}
+
+function hideCompanyDropdown(i) {
+  setTimeout(() => {
+    const d = document.getElementById(`companyDrop_${i}`);
+    if (d) d.style.display = 'none';
+  }, 200);
+}
+
+function renderCompanyDropdown(i, filtered, query) {
+  const dropdown = document.getElementById(`companyDrop_${i}`);
+  if (!dropdown || filtered.length === 0) { if(dropdown) dropdown.style.display = 'none'; return; }
+  dropdown.innerHTML = filtered.map(c => {
+    const hl = query
+      ? c.replace(new RegExp(`(${query})`, 'gi'), '<strong style="color:var(--accent2)">$1</strong>')
+      : c;
+    return `<div onmousedown="selectCompany(${i}, '${c.replace(/'/g, "\'")}')" style="
+      padding:7px 10px; cursor:pointer; border-bottom:1px solid var(--border);
+      transition:background 0.15s;" onmouseenter="this.style.background='#eaf4fb'"
+      onmouseleave="this.style.background='white'">${hl}</div>`;
+  }).join('');
+  dropdown.style.display = 'block';
+}
+
+function selectCompany(i, name) {
+  const el = document.getElementById(`company_${i}`);
+  if (el) el.value = name;
+  const d = document.getElementById(`companyDrop_${i}`);
+  if (d) d.style.display = 'none';
+}
+
+// =====================
+// Customer Autocomplete
+// =====================
+let customers = JSON.parse(localStorage.getItem('customers') || '[]');
+
+function saveCustomer(name) {
+  name = name.trim();
+  if (name && !customers.includes(name)) {
+    customers.push(name);
+    customers.sort();
+    localStorage.setItem('customers', JSON.stringify(customers));
+  }
+}
+
+function filterCustomers() {
+  const val = document.getElementById('customerName').value.trim();
+  const filtered = val.length === 0
+    ? customers
+    : customers.filter(c => c.toLowerCase().includes(val.toLowerCase()));
+  renderDropdown(filtered, val);
+}
+
+function showDropdown() {
+  const val = document.getElementById('customerName').value.trim();
+  const filtered = val.length === 0 ? customers : customers.filter(c => c.toLowerCase().includes(val.toLowerCase()));
+  renderDropdown(filtered, val);
+}
+
+function hideDropdown() {
+  setTimeout(() => {
+    document.getElementById('customerDropdown').style.display = 'none';
+  }, 200);
+}
+
+function renderDropdown(filtered, query) {
+  const dropdown = document.getElementById('customerDropdown');
+  if (filtered.length === 0) { dropdown.style.display = 'none'; return; }
+  dropdown.innerHTML = filtered.map(c => {
+    const hl = query
+      ? c.replace(new RegExp(`(${query})`, 'gi'), '<strong style="color:var(--accent2)">$1</strong>')
+      : c;
+    return `<div onmousedown="selectCustomer('${c.replace(/'/g,"\\'")}')" style="
+      padding:10px 14px; cursor:pointer; font-size:14px; border-bottom:1px solid var(--border);
+      transition:background 0.15s;" onmouseenter="this.style.background='#eaf4fb'"
+      onmouseleave="this.style.background='white'">${hl}</div>`;
+  }).join('');
+  dropdown.style.display = 'block';
+}
+
+function selectCustomer(name) {
+  document.getElementById('customerName').value = name;
+  document.getElementById('customerDropdown').style.display = 'none';
+}
+
+// =====================
+// Init
+// =====================
+buildTable();
+setToday();
+</script>
+</body>
+</html>
