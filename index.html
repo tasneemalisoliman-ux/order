@@ -391,10 +391,10 @@
 
 <div class="header">
   <div class="header-title">
-    <span>Sales Order System</span>
-    نظام طلبات المبيعات
+    <span>Factory Order System</span>
+    نظام طلبات المصنع
   </div>
-  <div class="header-badge">Internal Use Only</div>
+  <div class="header-badge">ProPack</div>
 </div>
 
 <div class="container">
@@ -545,24 +545,34 @@
 // Products Data
 // =====================
 const products = [
-  { en: "Saco Cup 16oz Clear",                unit: "pc/ctn", needsCompany: false },
-  { en: "Saco Cup 12oz Clear",                unit: "pc/ctn", needsCompany: false },
-  { en: "Saco Cup 22oz Clear",                unit: "pc/ctn", needsCompany: false },
-  { en: "Saco Cup 16oz Printed",              unit: "ctn",    needsCompany: false  },
-  { en: "Saco Cup 12oz Printed",              unit: "ctn",    needsCompany: false  },
-  { en: "Saco Cup 22oz Printed",              unit: "ctn",    needsCompany: false  },
-  { en: "PET Cup 400ml U-Shape Printed",      unit: "pcs",    needsCompany: false  },
-  { en: "PET Cup 500ml U-Shape Printed",      unit: "pcs",    needsCompany: false  },
-  { en: "PET Cup 700ml U-Shape Printed",      unit: "pcs",    needsCompany: false  },
-  { en: "PET Cup 400ml (14oz) Printed",       unit: "pcs",    needsCompany: false  },
-  { en: "Frosted Cup 360ml U-Shape Printed",  unit: "pcs",    needsCompany: false  },
-  { en: "Frosted Cup 500ml U-Shape Printed",  unit: "pcs",    needsCompany: false  },
-  { en: "Frosted Cup 700ml U-Shape Printed",  unit: "pcs",    needsCompany: false  },
-  { en: "Frosted Cup 360ml Printed",          unit: "pcs",    needsCompany: false  },
-  { en: "Frosted Cup 500ml Printed",          unit: "pcs",    needsCompany: false  },
-  { en: "Frosted Cup 700ml Printed",          unit: "pcs",    needsCompany: false  },
-  { en: "Saco Ice Cream Cup 8oz",             unit: "pcs",    needsCompany: false },
-  { en: "Saco Ice Cream Cup 8oz Printed",     unit: "pcs",    needsCompany: false  },
+  // Cups
+  { en: "Saco Cup 16oz Clear",               ar: "كوب ساكو 16 أوز شفاف",           unit: "pc/ctn", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 12oz Clear",               ar: "كوب ساكو 12 أوز شفاف",           unit: "pc/ctn", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 22oz Clear",               ar: "كوب ساكو 22 أوز شفاف",           unit: "pc/ctn", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 16oz Printed",             ar: "كوب ساكو 16 أوز مطبوع",          unit: "ctn",    hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 12oz Printed",             ar: "كوب ساكو 12 أوز مطبوع",          unit: "ctn",    hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 22oz Printed",             ar: "كوب ساكو 22 أوز مطبوع",          unit: "ctn",    hasPrice: true,  category: "cup" },
+  { en: "PET Cup 400ml U-Shape Printed",     ar: "كوب PET 400مل يو شيب مطبوع",    unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "PET Cup 500ml U-Shape Printed",     ar: "كوب PET 500مل يو شيب مطبوع",    unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "PET Cup 700ml U-Shape Printed",     ar: "كوب PET 700مل يو شيب مطبوع",    unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "PET Cup 400ml (14oz) Printed",      ar: "كوب PET 400مل 14أوز مطبوع",     unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "Frosted Cup 360ml U-Shape Printed", ar: "كوب مشبر 360مل يو شيب مطبوع",   unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "Frosted Cup 500ml U-Shape Printed", ar: "كوب مشبر 500مل يو شيب مطبوع",   unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "Frosted Cup 700ml U-Shape Printed", ar: "كوب مشبر 700مل يو شيب مطبوع",   unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "Frosted Cup 360ml Printed",         ar: "كوب مشبر 360مل مطبوع",           unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "Frosted Cup 500ml Printed",         ar: "كوب مشبر 500مل مطبوع",           unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "Frosted Cup 700ml Printed",         ar: "كوب مشبر 700مل مطبوع",           unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "Saco Ice Cream Cup 8oz",            ar: "كوب آيس كريم ساكو 8 أوز",        unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "Saco Ice Cream Cup 8oz Printed",    ar: "كوب آيس كريم ساكو 8 أوز مطبوع", unit: "pcs",    hasPrice: true,  category: "cup" },
+  // Lids | غطيان
+  { en: "Pet Dom",         ar: "غطا قبة",             unit: "pcs", hasPrice: false, category: "lid" },
+  { en: "Pet Flat",        ar: "غطا فلات",            unit: "pcs", hasPrice: false, category: "lid" },
+  { en: "Pet S Black with Heart", ar: "غطا أسود مع قلب", unit: "pcs", hasPrice: false, category: "lid" },
+  { en: "Pet Clear with Heart",   ar: "غطا شفاف مع قلب", unit: "pcs", hasPrice: false, category: "lid" },
+  { en: "Injection Dom",   ar: "غطا قلة انجيكشن",    unit: "pcs", hasPrice: false, category: "lid" },
+  { en: "Frosted Lid",     ar: "غطا مشبر بسلك",       unit: "pcs", hasPrice: false, category: "lid" },
+  // Cliche | كليشة
+  { en: "Cliche",          ar: "كليشة",               unit: "pcs", hasPrice: true,  category: "cliche" },
 ];
 
 // =====================
@@ -571,36 +581,43 @@ const products = [
 function buildTable() {
   const tbody = document.getElementById('productRows');
   tbody.innerHTML = '';
+  let lastCategory = '';
+  const categoryLabels = {
+    cup:    { en: 'Cups | الأكواب',    color: '#1a3a5c' },
+    lid:    { en: 'Lids | الغطيان',    color: '#2e7d9e' },
+    cliche: { en: 'Cliché | كليشة',   color: '#e8a020' },
+  };
   products.forEach((p, i) => {
+    // Category header row
+    if (p.category !== lastCategory) {
+      lastCategory = p.category;
+      const headerTr = document.createElement('tr');
+      headerTr.innerHTML = `
+        <td colspan="4" style="background:${categoryLabels[p.category].color};
+          color:white; font-weight:700; font-size:13px; padding:10px 16px;
+          text-align:right; letter-spacing:0.5px;">
+          ${categoryLabels[p.category].en}
+        </td>`;
+      tbody.appendChild(headerTr);
+    }
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="product-name">
-        ${p.en}
+        <span style="font-weight:700;">${p.ar}</span>
+        <span class="en-name">${p.en}</span>
         <span class="en-name" style="color:var(--accent); font-weight:600;">${p.unit}</span>
-        ${p.needsCompany ? `
-        <div style="margin-top:5px; position:relative;">
-          <input type="text" id="company_${i}" placeholder="Company name..."
-            autocomplete="off"
-            oninput="filterCompanies(${i})"
-            onfocus="showCompanyDropdown(${i})"
-            onblur="hideCompanyDropdown(${i})"
-            style="width:100%; padding:5px 8px; font-size:11px; border:1.5px solid var(--border);
-            border-radius:6px; font-family:'Barlow',sans-serif; color:var(--text); outline:none;"
-            onfocus2="this.style.borderColor='var(--accent2)'"
-          >
-          <div id="companyDrop_${i}" style="display:none; position:absolute; top:100%; right:0; left:0;
-            z-index:200; background:white; border:1.5px solid var(--accent2); border-top:none;
-            border-radius:0 0 8px 8px; max-height:140px; overflow-y:auto;
-            box-shadow:0 6px 16px rgba(0,0,0,0.1); font-size:12px;"></div>
-        </div>` : ''}
       </td>
       <td>
         <input type="number" id="qty_${i}" min="0" placeholder="0"
           oninput="calcRow(${i})" value="">
       </td>
       <td>
-        <input type="number" id="price_${i}" min="0" step="0.01" placeholder="0.00"
-          oninput="calcRow(${i})" value="">
+        ${p.hasPrice
+          ? `<input type="number" id="price_${i}" min="0" step="0.01" placeholder="0.00"
+              oninput="calcRow(${i})" value="">`
+          : `<span style="color:var(--muted); font-size:12px;">—</span>
+             <input type="hidden" id="price_${i}" value="0">`
+        }
       </td>
       <td class="total-cell" id="total_${i}">—</td>
     `;
