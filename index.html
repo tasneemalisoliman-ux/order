@@ -473,40 +473,28 @@
     </div>
   </div>
 
-  <!-- Card 2: Products Table -->
+  <!-- Card 2: Order Items -->
   <div class="card">
     <div class="card-header">
       <div class="icon">📦</div>
       <h2>تفاصيل الطلب <span>Order Details</span></h2>
     </div>
-    <div class="card-body" style="padding: 16px;">
-      <table class="products-table" id="productsTable">
-        <thead>
-          <tr>
-            <th style="text-align:right; padding-right:16px;">
-              <span class="ar">المنتج</span>
-              <span class="en">Product</span>
-            </th>
-            <th>
-              <span class="ar">الكمية</span>
-              <span class="en">Qty</span>
-            </th>
-            <th>
-              <span class="ar">السعر</span>
-              <span class="en">Price</span>
-            </th>
-            <th>
-              <span class="ar">الإجمالي</span>
-              <span class="en">Total</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody id="productRows">
-          <!-- Rows injected by JS -->
-        </tbody>
-      </table>
+    <div class="card-body" style="padding: 20px;">
 
-      <div class="grand-total">
+      <!-- Order Lines -->
+      <div id="orderLines"></div>
+
+      <!-- Add Item Button -->
+      <button type="button" onclick="addLine()" style="
+        margin-top:14px; width:100%; padding:12px;
+        border:2px dashed var(--accent2); background:transparent;
+        color:var(--accent2); border-radius:10px; font-family:'Cairo',sans-serif;
+        font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s;">
+        ＋ &nbsp; إضافة صنف آخر | Add Another Item
+      </button>
+
+      <!-- Grand Total -->
+      <div class="grand-total" style="margin-top:20px;">
         <div class="label">
           <span>Grand Total | الإجمالي الكلي</span>
           المبلغ الإجمالي
@@ -576,72 +564,157 @@ const products = [
 ];
 
 // =====================
-// Build Table Rows
+// Lids list
 // =====================
-function buildTable() {
-  const tbody = document.getElementById('productRows');
-  tbody.innerHTML = '';
-  let lastCategory = '';
-  const categoryLabels = {
-    cup:    { en: 'Cups | الأكواب',    color: '#1a3a5c' },
-    lid:    { en: 'Lids | الغطيان',    color: '#2e7d9e' },
-    cliche: { en: 'Cliché | كليشة',   color: '#e8a020' },
-  };
-  products.forEach((p, i) => {
-    // Category header row
-    if (p.category !== lastCategory) {
-      lastCategory = p.category;
-      const headerTr = document.createElement('tr');
-      headerTr.innerHTML = `
-        <td colspan="4" style="background:${categoryLabels[p.category].color};
-          color:white; font-weight:700; font-size:13px; padding:10px 16px;
-          text-align:right; letter-spacing:0.5px;">
-          ${categoryLabels[p.category].en}
-        </td>`;
-      tbody.appendChild(headerTr);
-    }
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="product-name">
-        <span style="font-weight:700;">${p.ar}</span>
-        <span class="en-name">${p.en}</span>
-        <span class="en-name" style="color:var(--accent); font-weight:600;">${p.unit}</span>
-      </td>
-      <td>
-        <input type="number" id="qty_${i}" min="0" placeholder="0"
-          oninput="calcRow(${i})" value="">
-      </td>
-      <td>
-        ${p.hasPrice
-          ? `<input type="number" id="price_${i}" min="0" step="0.01" placeholder="0.00"
-              oninput="calcRow(${i})" value="">`
-          : `<span style="color:var(--muted); font-size:12px;">—</span>
-             <input type="hidden" id="price_${i}" value="0">`
-        }
-      </td>
-      <td class="total-cell" id="total_${i}">—</td>
-    `;
-    tbody.appendChild(tr);
-  });
+const lids = [
+  { en: "Pet Dom",              ar: "غطا قبة" },
+  { en: "Pet Flat",             ar: "غطا فلات" },
+  { en: "Pet S Black with Heart", ar: "غطا أسود مع قلب" },
+  { en: "Pet Clear with Heart", ar: "غطا شفاف مع قلب" },
+  { en: "Injection Dom",        ar: "غطا قلة انجيكشن" },
+  { en: "Frosted Lid",          ar: "غطا مشبر بسلك" },
+];
+
+const cupProducts = products.filter(p => p.category === 'cup');
+const clicheProduct = products.find(p => p.category === 'cliche');
+
+let lineCount = 0;
+
+function needsLid(productEn) {
+  return productEn && !productEn.includes('Saco Cup') && !productEn.includes('Ice Cream');
 }
 
-// =====================
-// Calculate Row Total
-// =====================
-function calcRow(i) {
-  const qty   = parseFloat(document.getElementById(`qty_${i}`).value)   || 0;
-  const price = parseFloat(document.getElementById(`price_${i}`).value) || 0;
+function buildProductOptions() {
+  const groups = [
+    { label: 'الأكواب | Cups', items: cupProducts },
+    { label: 'كليشة | Cliché', items: [clicheProduct] },
+  ];
+  let html = '<option value="">-- اختر الصنف | Select Product --</option>';
+  groups.forEach(g => {
+    html += `<optgroup label="${g.label}">`;
+    g.items.forEach(p => {
+      html += `<option value="${p.en}" data-ar="${p.ar}" data-unit="${p.unit}" data-hasprice="${p.hasPrice}">${p.ar} | ${p.en} (${p.unit})</option>`;
+    });
+    html += '</optgroup>';
+  });
+  return html;
+}
+
+function buildLidOptions() {
+  let html = '<option value="">-- بدون غطا | No Lid --</option>';
+  lids.forEach(l => {
+    html += `<option value="${l.en}">${l.ar} | ${l.en}</option>`;
+  });
+  return html;
+}
+
+function addLine() {
+  const id = lineCount++;
+  const container = document.getElementById('orderLines');
+  const div = document.createElement('div');
+  div.id = `line_${id}`;
+  div.style.cssText = 'background:#f9fbfd; border:1.5px solid var(--border); border-radius:12px; padding:16px; margin-bottom:12px; position:relative;';
+  div.innerHTML = `
+    <button onclick="removeLine(${id})" style="position:absolute; top:10px; left:10px;
+      background:var(--danger); color:white; border:none; border-radius:50%; width:24px; height:24px;
+      font-size:14px; cursor:pointer; line-height:24px; text-align:center;">✕</button>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:10px;">
+      <div class="field" style="grid-column:1/-1;">
+        <label style="font-size:11px; font-weight:700; color:var(--muted); font-family:'Barlow',sans-serif; text-transform:uppercase; letter-spacing:0.8px;">
+          <span style="font-family:'Cairo',sans-serif; font-size:13px; text-transform:none; color:var(--text); font-weight:600;">الصنف</span> Product
+        </label>
+        <select id="prod_${id}" onchange="onProductChange(${id})" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:'Cairo',sans-serif; font-size:13px; color:var(--text); background:white; outline:none;">
+          ${buildProductOptions()}
+        </select>
+      </div>
+
+      <div class="field">
+        <label style="font-size:11px; font-weight:700; color:var(--muted); font-family:'Barlow',sans-serif; text-transform:uppercase;">
+          <span style="font-family:'Cairo',sans-serif; font-size:13px; text-transform:none; color:var(--text); font-weight:600;">الكمية</span> Qty
+        </label>
+        <input type="number" id="qty_${id}" min="0" placeholder="0" oninput="calcLine(${id})"
+          style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:'Barlow',sans-serif; font-size:15px; text-align:center; outline:none;">
+      </div>
+
+      <div class="field" id="priceField_${id}">
+        <label style="font-size:11px; font-weight:700; color:var(--muted); font-family:'Barlow',sans-serif; text-transform:uppercase;">
+          <span style="font-family:'Cairo',sans-serif; font-size:13px; text-transform:none; color:var(--text); font-weight:600;">السعر</span> Price
+        </label>
+        <input type="number" id="price_${id}" min="0" step="0.01" placeholder="0.00" oninput="calcLine(${id})"
+          style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:'Barlow',sans-serif; font-size:15px; text-align:center; outline:none;">
+      </div>
+    </div>
+
+    <!-- Lid section (hidden by default) -->
+    <div id="lidSection_${id}" style="display:none; margin-top:8px; padding-top:10px; border-top:1px dashed var(--border);">
+      <div class="field">
+        <label style="font-size:11px; font-weight:700; color:var(--accent2); font-family:'Barlow',sans-serif; text-transform:uppercase; letter-spacing:0.8px;">
+          <span style="font-family:'Cairo',sans-serif; font-size:13px; text-transform:none; color:var(--accent2); font-weight:700;">الغطا</span> Lid (اختياري | Optional)
+        </label>
+        <select id="lid_${id}" style="width:100%; padding:11px 14px; border:1.5px solid var(--accent2); border-radius:10px; font-family:'Cairo',sans-serif; font-size:13px; color:var(--text); background:white; outline:none;">
+          ${buildLidOptions()}
+        </select>
+      </div>
+      <div class="field" style="margin-top:10px;">
+        <label style="font-size:11px; font-weight:700; color:var(--muted); font-family:'Barlow',sans-serif; text-transform:uppercase;">
+          <span style="font-family:'Cairo',sans-serif; font-size:13px; text-transform:none; color:var(--text); font-weight:600;">كمية الغطا</span> Lid Qty
+        </label>
+        <input type="number" id="lidQty_${id}" min="0" placeholder="0"
+          style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:'Barlow',sans-serif; font-size:15px; text-align:center; outline:none;">
+      </div>
+    </div>
+
+    <div style="text-align:left; margin-top:8px; font-size:13px; font-weight:700; color:var(--success);">
+      الإجمالي | Total: <span id="lineTotal_${id}">—</span>
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+function removeLine(id) {
+  const el = document.getElementById(`line_${id}`);
+  if (el) el.remove();
+  calcGrandTotal();
+}
+
+function onProductChange(id) {
+  const sel = document.getElementById(`prod_${id}`);
+  const opt = sel.options[sel.selectedIndex];
+  const hasPrice = opt.dataset.hasprice === 'true';
+  const productEn = opt.value;
+
+  // Show/hide price
+  const pf = document.getElementById(`priceField_${id}`);
+  if (hasPrice) {
+    pf.style.display = '';
+  } else {
+    pf.style.display = 'none';
+    document.getElementById(`price_${id}`).value = '0';
+  }
+
+  // Show/hide lid
+  const lidSec = document.getElementById(`lidSection_${id}`);
+  lidSec.style.display = needsLid(productEn) ? '' : 'none';
+
+  calcLine(id);
+}
+
+function calcLine(id) {
+  const qty   = parseFloat(document.getElementById(`qty_${id}`).value)   || 0;
+  const price = parseFloat(document.getElementById(`price_${id}`).value) || 0;
   const total = qty * price;
-  const cell  = document.getElementById(`total_${i}`);
+  const cell  = document.getElementById(`lineTotal_${id}`);
   cell.textContent = total > 0 ? total.toFixed(2) : '—';
   calcGrandTotal();
 }
 
 function calcGrandTotal() {
   let grand = 0;
-  products.forEach((_, i) => {
-    const qty   = parseFloat(document.getElementById(`qty_${i}`).value)   || 0;
-    const price = parseFloat(document.getElementById(`price_${i}`).value) || 0;
+  document.querySelectorAll('[id^="line_"]').forEach(line => {
+    const id = line.id.replace('line_', '');
+    const qty   = parseFloat(document.getElementById(`qty_${id}`)?.value)   || 0;
+    const price = parseFloat(document.getElementById(`price_${id}`)?.value) || 0;
     grand += qty * price;
   });
   document.getElementById('grandTotal').textContent = grand.toFixed(2);
@@ -670,40 +743,58 @@ function submitForm() {
     return;
   }
 
-  // Save customer for future autocomplete
   saveCustomer(customer);
 
-  // Build data array for export
   const rows = [];
-  products.forEach((p, i) => {
-    const qty   = document.getElementById(`qty_${i}`).value;
-    const price = document.getElementById(`price_${i}`).value;
-    if (qty && parseFloat(qty) > 0) {
-      const companyEl = document.getElementById(`company_${i}`);
-      const companyVal = companyEl ? companyEl.value.trim() : '';
-      if (companyVal) saveCompany(companyVal);
-      rows.push({
-        date, rep, customer, cliche,
-        delivery: '10-15 Days | يوم',
-        product: `${p.en}${companyVal ? ' - ' + companyVal : ''} (${p.unit})`,
-        qty, price,
-        total: (parseFloat(qty) * parseFloat(price)).toFixed(2),
-        notes
-      });
+  document.querySelectorAll('[id^="line_"]').forEach(line => {
+    const id = line.id.replace('line_', '');
+    const sel = document.getElementById(`prod_${id}`);
+    const productEn = sel?.value;
+    if (!productEn) return;
+    const opt = sel.options[sel.selectedIndex];
+    const unit = opt.dataset.unit;
+    const qty   = document.getElementById(`qty_${id}`)?.value || '0';
+    const price = document.getElementById(`price_${id}`)?.value || '0';
+    if (parseFloat(qty) <= 0) return;
+
+    rows.push({
+      date, rep, customer, cliche,
+      delivery: '10-15 Days | يوم',
+      product: `${opt.dataset.ar} | ${productEn} (${unit})`,
+      qty, price,
+      total: (parseFloat(qty) * parseFloat(price)).toFixed(2),
+      notes
+    });
+
+    // Add lid row if selected
+    const lidSec = document.getElementById(`lidSection_${id}`);
+    if (lidSec && lidSec.style.display !== 'none') {
+      const lidSel = document.getElementById(`lid_${id}`);
+      const lidVal = lidSel?.value;
+      const lidQty = document.getElementById(`lidQty_${id}`)?.value || '0';
+      if (lidVal && parseFloat(lidQty) > 0) {
+        const lidAr = lids.find(l => l.en === lidVal)?.ar || lidVal;
+        rows.push({
+          date, rep, customer, cliche,
+          delivery: '10-15 Days | يوم',
+          product: `${lidAr} | ${lidVal} (pcs) - غطا`,
+          qty: lidQty, price: '0',
+          total: '0',
+          notes: ''
+        });
+      }
     }
   });
 
   if (rows.length === 0) {
-    alert('يرجى إدخال كمية لمنتج واحد على الأقل |\nPlease enter at least one product quantity.');
+    alert('يرجى إضافة صنف واحد على الأقل |\nPlease add at least one item.');
     return;
   }
 
-  // Save to localStorage for CSV export
   const existing = JSON.parse(localStorage.getItem('orders') || '[]');
   rows.forEach(r => existing.push(r));
   localStorage.setItem('orders', JSON.stringify(existing));
 
-  // Send to Google Sheets
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0omZe6sZMD7Ht3lEtNQknMTS7LRms8O61LWu91_79f7nRc2WijgIrp_X3acbUsS40QQ/exec';
   const btn = document.querySelector('.btn-submit');
   btn.innerHTML = '⏳ &nbsp; جاري الإرسال...';
@@ -716,7 +807,7 @@ function submitForm() {
     body: JSON.stringify({ rows })
   })
   .finally(() => {
-    btn.innerHTML = '\u2705 &nbsp; \u062a\u0623\u0643\u064a\u062f \u0627\u0644\u0637\u0644\u0628 &nbsp;|&nbsp; Submit Order';
+    btn.innerHTML = '✅ &nbsp; تأكيد الطلب &nbsp;|&nbsp; Submit Order';
     btn.disabled = false;
     document.getElementById('successOverlay').classList.add('show');
   });
@@ -731,9 +822,11 @@ function resetForm() {
   document.getElementById('customerName').value = '';
   document.getElementById('clicheStatus').value = '';
   document.getElementById('notes').value = '';
-  setToday();
-  buildTable();
+  document.getElementById('orderLines').innerHTML = '';
   document.getElementById('grandTotal').textContent = '0.00';
+  lineCount = 0;
+  setToday();
+  addLine();
 }
 
 // =====================
@@ -889,8 +982,8 @@ function selectCustomer(name) {
 // =====================
 // Init
 // =====================
-buildTable();
 setToday();
+addLine();
 </script>
 </body>
 </html>
