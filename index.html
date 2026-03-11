@@ -455,6 +455,8 @@
           </select>
         </div>
 
+
+
       </div>
 
       <!-- Notes field full width -->
@@ -480,6 +482,28 @@
       <h2>تفاصيل الطلب <span>Order Details</span></h2>
     </div>
     <div class="card-body" style="padding: 20px;">
+
+      <!-- Product Type + Sample -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;">
+        <div class="field">
+          <label><span class="ar">نوع المنتج</span> Product Type <span class="required">*</span></label>
+          <select id="productType" required onchange="filterByType()">
+            <option value="">-- اختر النوع | Select Type --</option>
+            <option value="أكواب ساكو PP | Saco PP Cups">أكواب ساكو PP | Saco PP Cups</option>
+            <option value="أكواب PET | PET Cups">أكواب PET | PET Cups</option>
+            <option value="أكواب مشبر | Frosted Cups">أكواب مشبر | Frosted Cups</option>
+            <option value="أكواب ورقية | Paper Cups">أكواب ورقية | Paper Cups</option>
+          </select>
+        </div>
+        <div class="field">
+          <label><span class="ar">هل يوجد عينة للعميل؟</span> Sample Available? <span class="required">*</span></label>
+          <select id="hasSample" required>
+            <option value="">-- اختر | Select --</option>
+            <option value="نعم | Yes">نعم | Yes</option>
+            <option value="لا | No">لا | No</option>
+          </select>
+        </div>
+      </div>
 
       <!-- Order Lines -->
       <div id="orderLines"></div>
@@ -567,9 +591,34 @@ const products = [
   { en: "Pet Clear with Heart",   ar: "غطا شفاف مع قلب", unit: "pcs", hasPrice: false, category: "lid" },
   { en: "Injection Dom",   ar: "غطا قلة انجيكشن",    unit: "pcs", hasPrice: false, category: "lid" },
   { en: "Frosted Lid",     ar: "غطا مشبر بسلك",       unit: "pcs", hasPrice: false, category: "lid" },
+  // Paper Cups | أكواب ورقية
+  { en: "Paper Cup 4oz",   ar: "جلاص ورقي 4 أوز",     unit: "pcs", hasPrice: true,  category: "paper" },
+  { en: "Paper Cup 8oz",   ar: "جلاص ورقي 8 أوز",     unit: "pcs", hasPrice: true,  category: "paper" },
+  { en: "Paper Cup 12oz",  ar: "جلاص ورقي 12 أوز",    unit: "pcs", hasPrice: true,  category: "paper" },
   // Cliche | كليشة
   { en: "Cliche",          ar: "كليشة",               unit: "pcs", hasPrice: true,  category: "cliche" },
 ];
+
+// =====================
+// Product Type Filter
+// =====================
+function filterByType() {
+  const type = document.getElementById('productType').value;
+  // Reset all order lines when type changes
+  document.getElementById('orderLines').innerHTML = '';
+  lineCount = 0;
+  addLine();
+}
+
+function getTypeFilter() {
+  const type = document.getElementById('productType').value;
+  if (!type) return null;
+  if (type.includes('PP')) return p => p.en.includes('Saco Cup') && !p.en.includes('Ice Cream');
+  if (type.includes('PET')) return p => p.en.includes('PET');
+  if (type.includes('Frosted') || type.includes('مشبر')) return p => p.en.includes('Frosted') && !p.en.includes('Lid');
+  if (type.includes('ورق') || type.includes('Paper')) return p => p.category === 'paper';
+  return null;
+}
 
 // =====================
 // Lids list
@@ -583,7 +632,7 @@ const lids = [
   { en: "Frosted Lid",          ar: "غطا مشبر بسلك" },
 ];
 
-const cupProducts = products.filter(p => p.category === 'cup');
+const cupProducts = products.filter(p => p.category === 'cup' || p.category === 'paper');
 const clicheProduct = products.find(p => p.category === 'cliche');
 
 let lineCount = 0;
@@ -593,12 +642,15 @@ function needsLid(productEn) {
 }
 
 function buildProductOptions() {
+  const typeFilter = getTypeFilter();
+  let filteredCups = typeFilter ? cupProducts.filter(typeFilter) : cupProducts;
   const groups = [
-    { label: 'الأكواب | Cups', items: cupProducts },
+    { label: 'الأكواب | Cups', items: filteredCups },
     { label: 'كليشة | Cliché', items: [clicheProduct] },
   ];
   let html = '<option value="">-- اختر الصنف | Select Product --</option>';
   groups.forEach(g => {
+    if (g.items.length === 0) return;
     html += `<optgroup label="${g.label}">`;
     g.items.forEach(p => {
       html += `<option value="${p.en}" data-ar="${p.ar}" data-unit="${p.unit}" data-hasprice="${p.hasPrice}">${p.ar} | ${p.en} (${p.unit})</option>`;
@@ -740,13 +792,15 @@ function setToday() {
 // Submit
 // =====================
 function submitForm() {
-  const date     = document.getElementById('orderDate').value;
-  const rep      = document.getElementById('salesRep').value;
-  const customer = document.getElementById('customerName').value;
-  const cliche   = document.getElementById('clicheStatus').value;
-  const notes    = document.getElementById('notes').value;
+  const date        = document.getElementById('orderDate').value;
+  const rep         = document.getElementById('salesRep').value;
+  const customer    = document.getElementById('customerName').value;
+  const cliche      = document.getElementById('clicheStatus').value;
+  const productType = document.getElementById('productType').value;
+  const hasSample   = document.getElementById('hasSample').value;
+  const notes       = document.getElementById('notes').value;
 
-  if (!date || !rep || !customer || !cliche) {
+  if (!date || !rep || !customer || !cliche || !productType || !hasSample) {
     alert('يرجى تعبئة جميع الحقول الإلزامية |\nPlease fill all required fields.');
     return;
   }
@@ -766,7 +820,7 @@ function submitForm() {
     if (parseFloat(qty) <= 0) return;
 
     rows.push({
-      date, rep, customer, cliche,
+      date, rep, customer, cliche, productType, hasSample,
       delivery: '10-15 Days | يوم',
       product: `${opt.dataset.ar} | ${productEn} (${unit})`,
       qty, price,
@@ -783,7 +837,7 @@ function submitForm() {
       if (lidVal && parseFloat(lidQty) > 0) {
         const lidAr = lids.find(l => l.en === lidVal)?.ar || lidVal;
         rows.push({
-          date, rep, customer, cliche,
+          date, rep, customer, cliche, productType, hasSample,
           delivery: '10-15 Days | يوم',
           product: `${lidAr} | ${lidVal} (pcs) - غطا`,
           qty: lidQty, price: '0',
@@ -829,6 +883,8 @@ function resetForm() {
   document.getElementById('salesRep').value = '';
   document.getElementById('customerName').value = '';
   document.getElementById('clicheStatus').value = '';
+  document.getElementById('productType').value = '';
+  document.getElementById('hasSample').value = '';
   document.getElementById('notes').value = '';
   document.getElementById('orderLines').innerHTML = '';
   document.getElementById('grandTotal').textContent = '0.00';
@@ -852,6 +908,8 @@ function exportCSV() {
     'Sales Rep | المندوب',
     'Customer | العميل',
     'Cliché Status | حالة الكليشة',
+    'Product Type | نوع المنتج',
+    'Sample | عينة',
     'Delivery | التسليم',
     'Product | المنتج',
     'Qty | الكمية',
@@ -863,7 +921,7 @@ function exportCSV() {
   const csvRows = [headers.join(',')];
   orders.forEach(o => {
     csvRows.push([
-      o.date, `"${o.rep}"`, `"${o.customer}"`, `"${o.cliche || ''}"`, `"${o.delivery}"`,
+      o.date, `"${o.rep}"`, `"${o.customer}"`, `"${o.cliche || ''}"`, `"${o.productType || ''}"`, `"${o.hasSample || ''}"`, `"${o.delivery}"`,
       `"${o.product}"`, o.qty, o.price, o.total, `"${o.notes || ''}"`
     ].join(','));
   });
