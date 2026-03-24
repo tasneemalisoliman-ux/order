@@ -582,8 +582,6 @@ const products = [
   { en: "Frosted Cup 360ml Printed",         ar: "كوب مشبر 360مل مطبوع",           unit: "pcs",    hasPrice: true,  category: "cup" },
   { en: "Frosted Cup 500ml Printed",         ar: "كوب مشبر 500مل مطبوع",           unit: "pcs",    hasPrice: true,  category: "cup" },
   { en: "Frosted Cup 700ml Printed",         ar: "كوب مشبر 700مل مطبوع",           unit: "pcs",    hasPrice: true,  category: "cup" },
-  { en: "Saco Ice Cream Cup 8oz",            ar: "كوب آيس كريم ساكو 8 أوز",        unit: "pcs",    hasPrice: true,  category: "cup" },
-  { en: "Saco Ice Cream Cup 8oz Printed",    ar: "كوب آيس كريم ساكو 8 أوز مطبوع", unit: "pcs",    hasPrice: true,  category: "cup" },
   // Lids | غطيان
   { en: "Pet Dom",         ar: "غطا قبة",             unit: "pcs", hasPrice: false, category: "lid" },
   { en: "Pet Flat",        ar: "غطا فلات",            unit: "pcs", hasPrice: false, category: "lid" },
@@ -591,6 +589,8 @@ const products = [
   { en: "Pet Clear with Heart",   ar: "غطا شفاف مع قلب", unit: "pcs", hasPrice: false, category: "lid" },
   { en: "Injection Dom",   ar: "غطا قلة انجيكشن",    unit: "pcs", hasPrice: false, category: "lid" },
   { en: "Frosted Lid",     ar: "غطا مشبر بسلك",       unit: "pcs", hasPrice: false, category: "lid" },
+  { en: "Saco Ice Cream Cup 8oz Clear",    ar: "كوب آيس كريم ساكو 8 أوز شفاف",   unit: "pcs", hasPrice: true, category: "cup" },
+  { en: "Saco Ice Cream Cup 8oz Printed",  ar: "كوب آيس كريم ساكو 8 أوز مطبوع",  unit: "pcs", hasPrice: true, category: "cup" },
   // Paper Cups | أكواب ورقية
   { en: "Paper Cup 4oz",   ar: "جلاص ورقي 4 أوز",     unit: "pcs", hasPrice: true,  category: "paper" },
   { en: "Paper Cup 8oz",   ar: "جلاص ورقي 8 أوز",     unit: "pcs", hasPrice: true,  category: "paper" },
@@ -613,7 +613,7 @@ function filterByType() {
 function getTypeFilter() {
   const type = document.getElementById('productType').value;
   if (!type) return null;
-  if (type.includes('PP')) return p => p.en.includes('Saco Cup') && !p.en.includes('Ice Cream');
+  if (type.includes('PP')) return p => p.en.includes('Saco Cup') || p.en.includes('Ice Cream');
   if (type.includes('PET')) return p => p.en.includes('PET');
   if (type.includes('Frosted') || type.includes('مشبر')) return p => p.en.includes('Frosted') && !p.en.includes('Lid');
   if (type.includes('ورق') || type.includes('Paper')) return p => p.category === 'paper';
