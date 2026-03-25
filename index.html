@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Order Form | نظام طلبات المصنع</title>
+<title>Order Form | نموذج الطلب</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Barlow:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -113,11 +113,13 @@
   }
   .card-body { padding: 24px; }
 
+  /* Form Grid */
   .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 18px;
   }
+  .form-grid.full { grid-template-columns: 1fr; }
 
   .field {
     display: flex;
@@ -128,39 +130,135 @@
     font-size: 12px;
     font-weight: 700;
     color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
     font-family: 'Barlow', sans-serif;
   }
   .field label .ar {
     font-family: 'Cairo', sans-serif;
     font-size: 13px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 600;
     color: var(--text);
+    margin-right: 6px;
   }
   .field label .required { color: var(--danger); margin-right: 3px; }
 
-  input, select, textarea {
+  input[type="date"],
+  input[type="number"],
+  input[type="text"],
+  select {
     width: 100%;
     padding: 11px 14px;
     border: 1.5px solid var(--border);
     border-radius: 10px;
     font-family: 'Cairo', sans-serif;
     font-size: 14px;
-    outline: none;
+    color: var(--text);
+    background: white;
     transition: all 0.2s;
+    outline: none;
+    direction: rtl;
   }
   input:focus, select:focus {
     border-color: var(--accent2);
     box-shadow: 0 0 0 3px rgba(46,125,158,0.1);
   }
+  input[type="number"] { font-family: 'Barlow', sans-serif; font-size: 15px; text-align: center; }
 
+  /* Readonly field */
   .readonly-field {
     padding: 11px 14px;
     border: 1.5px solid var(--border);
     border-radius: 10px;
+    font-size: 14px;
     background: #f0f4f8;
     color: var(--muted);
     font-weight: 600;
   }
 
+  /* Products Table */
+  .products-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  .products-table thead tr {
+    background: var(--primary);
+    color: white;
+  }
+  .products-table thead th {
+    padding: 12px 14px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  .products-table thead th .ar {
+    display: block;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  .products-table thead th .en {
+    display: block;
+    font-family: 'Barlow', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    opacity: 0.7;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .products-table tbody tr:nth-child(odd) { background: var(--row-odd); }
+  .products-table tbody tr:nth-child(even) { background: var(--row-even); }
+  .products-table tbody tr { transition: background 0.15s; }
+  .products-table tbody tr:hover { background: #eaf4fb; }
+
+  .products-table td {
+    padding: 10px 10px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .product-name {
+    font-weight: 600;
+    font-size: 13px;
+    text-align: right;
+    padding-right: 16px !important;
+    color: var(--primary);
+  }
+  .product-name .en-name {
+    display: block;
+    font-size: 11px;
+    font-family: 'Barlow', sans-serif;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .products-table input[type="number"] {
+    width: 90px;
+    padding: 8px 6px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+  }
+  .products-table input[type="number"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(232,160,32,0.15);
+  }
+
+  .total-cell {
+    font-weight: 700;
+    color: var(--success);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+  }
+
+  /* Grand Total */
   .grand-total {
     display: flex;
     align-items: center;
@@ -169,7 +267,19 @@
     background: linear-gradient(90deg, var(--primary), var(--accent2));
     border-radius: 12px;
     margin-top: 16px;
+  }
+  .grand-total .label {
     color: white;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .grand-total .label span {
+    font-family: 'Barlow', sans-serif;
+    font-size: 11px;
+    opacity: 0.7;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
   .grand-total .amount {
     color: var(--accent);
@@ -178,7 +288,11 @@
     font-family: 'Barlow', sans-serif;
   }
 
-  .submit-area { text-align: center; margin-top: 20px; }
+  /* Submit */
+  .submit-area {
+    text-align: center;
+    padding: 10px 0 0;
+  }
   .btn-submit {
     background: linear-gradient(135deg, var(--accent) 0%, #c87d10 100%);
     color: white;
@@ -186,11 +300,20 @@
     padding: 16px 60px;
     border-radius: 50px;
     font-size: 16px;
+    font-family: 'Cairo', sans-serif;
     font-weight: 700;
     cursor: pointer;
     box-shadow: 0 6px 20px rgba(232,160,32,0.35);
+    transition: all 0.25s;
+    letter-spacing: 0.5px;
   }
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(232,160,32,0.45);
+  }
+  .btn-submit:active { transform: translateY(0); }
 
+  /* Success */
   .success-overlay {
     display: none;
     position: fixed;
@@ -204,9 +327,63 @@
   .success-box {
     background: white;
     border-radius: 20px;
-    padding: 40px;
+    padding: 50px 40px;
     text-align: center;
     max-width: 380px;
+    width: 90%;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+    animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .success-icon {
+    width: 70px; height: 70px;
+    background: linear-gradient(135deg, #2a9d5c, #1e7a46);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 20px;
+    box-shadow: 0 8px 20px rgba(42,157,92,0.3);
+  }
+  .success-box h3 { font-size: 20px; font-weight: 900; color: var(--primary); margin-bottom: 8px; }
+  .success-box p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+  .btn-new { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 30px; font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .btn-new:hover { background: var(--accent2); }
+
+  /* CSV Export */
+  .export-area { text-align: center; margin-top: 12px; }
+  .btn-export {
+    background: transparent;
+    color: var(--accent2);
+    border: 2px solid var(--accent2);
+    padding: 10px 28px;
+    border-radius: 30px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  .btn-export:hover { background: var(--accent2); color: white; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .header { padding: 20px; }
+    .container { padding: 0 12px 40px; }
+    .products-table input[type="number"] { width: 70px; }
+  }
+
+  /* Animate in */
+  .card { animation: fadeUp 0.4s ease both; }
+  .card:nth-child(2) { animation-delay: 0.1s; }
+  .card:nth-child(3) { animation-delay: 0.2s; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 </style>
 </head>
@@ -221,6 +398,8 @@
 </div>
 
 <div class="container">
+
+  <!-- Card 1: Basic Info -->
   <div class="card">
     <div class="card-header">
       <div class="icon">📋</div>
@@ -228,53 +407,88 @@
     </div>
     <div class="card-body">
       <div class="form-grid">
+
         <div class="field">
           <label><span class="ar">تاريخ الطلب</span> Order Date <span class="required">*</span></label>
           <input type="date" id="orderDate" required>
         </div>
+
         <div class="field">
-          <label><span class="ar">اسم المندوب</span> Sales Rep <span class="required">*</span></label>
+          <label><span class="ar">مدة التسليم</span> Delivery Duration</label>
+          <div class="readonly-field">10-15 يوم &nbsp;|&nbsp; 10-15 Days</div>
+        </div>
+
+        <div class="field">
+          <label><span class="ar">اسم المندوب</span> Sales Representative <span class="required">*</span></label>
           <select id="salesRep" required>
-            <option value="">-- اختر المندوب --</option>
+            <option value="">-- اختر المندوب | Select Rep --</option>
             <option value="Osama | أسامة">Osama | أسامة</option>
             <option value="Mahbob | محبوب">Mahbob | محبوب</option>
             <option value="Mahmoud Gebriel | محمود جبريل">Mahmoud Gebriel | محمود جبريل</option>
             <option value="Burhan | برهان">Burhan | برهان</option>
           </select>
         </div>
-        <div class="field">
-          <label><span class="ar">اسم العميل</span> Customer <span class="required">*</span></label>
-          <input type="text" id="customerName" placeholder="اسم العميل..." required>
+
+        <div class="field" style="position:relative;">
+          <label><span class="ar">اسم العميل</span> Customer Name <span class="required">*</span></label>
+          <input type="text" id="customerName" placeholder="اكتب اسم العميل... | Type customer name..."
+            autocomplete="off" oninput="filterCustomers()" onfocus="showDropdown()" onblur="hideDropdown()" required
+            style="padding-left: 36px;">
+          <span style="position:absolute; left:12px; bottom:11px; color:var(--muted); font-size:15px; pointer-events:none;">🔍</span>
+          <div id="customerDropdown" style="
+            display:none; position:absolute; top:100%; right:0; left:0; z-index:100;
+            background:white; border:1.5px solid var(--accent2); border-top:none;
+            border-radius:0 0 10px 10px; max-height:200px; overflow-y:auto;
+            box-shadow:0 8px 20px rgba(0,0,0,0.12);">
+          </div>
+          <div style="margin-top:5px; font-size:11px; color:var(--muted); font-family:'Barlow',sans-serif;">
+            💡 اكتب اسم جديد وسيُحفظ تلقائياً | New names are saved automatically
+          </div>
         </div>
+
         <div class="field">
           <label><span class="ar">حالة الكليشة</span> Cliché Status <span class="required">*</span></label>
           <select id="clicheStatus" required>
-            <option value="">-- اختر الحالة --</option>
+            <option value="">-- اختر الحالة | Select Status --</option>
             <option value="جاري التحضير | In Preparation">جاري التحضير | In Preparation</option>
             <option value="في المصنع | At Factory">في المصنع | At Factory</option>
           </select>
         </div>
+
+
+
       </div>
+
+      <!-- Notes field full width -->
       <div style="margin-top: 18px;">
         <div class="field">
           <label><span class="ar">ملاحظات</span> Notes</label>
-          <textarea id="notes" rows="2"></textarea>
+          <textarea id="notes" rows="3" placeholder="أي ملاحظات إضافية... | Any additional notes..."
+            style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px;
+            font-family:'Cairo',sans-serif; font-size:14px; color:var(--text); background:white;
+            resize:vertical; outline:none; transition:all 0.2s; direction:rtl;"
+            onfocus="this.style.borderColor='var(--accent2)'; this.style.boxShadow='0 0 0 3px rgba(46,125,158,0.1)'"
+            onblur="this.style.borderColor='var(--border)'; this.style.boxShadow='none'"></textarea>
         </div>
       </div>
+
     </div>
   </div>
 
+  <!-- Card 2: Order Items -->
   <div class="card">
     <div class="card-header">
       <div class="icon">📦</div>
       <h2>تفاصيل الطلب <span>Order Details</span></h2>
     </div>
-    <div class="card-body">
+    <div class="card-body" style="padding: 20px;">
+
+      <!-- Product Type + Sample -->
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;">
         <div class="field">
           <label><span class="ar">نوع المنتج</span> Product Type <span class="required">*</span></label>
           <select id="productType" required onchange="filterByType()">
-            <option value="">-- اختر النوع --</option>
+            <option value="">-- اختر النوع | Select Type --</option>
             <option value="أكواب ساكو PP | Saco PP Cups">أكواب ساكو PP | Saco PP Cups</option>
             <option value="أكواب PET | PET Cups">أكواب PET | PET Cups</option>
             <option value="أكواب مشبر | Frosted Cups">أكواب مشبر | Frosted Cups</option>
@@ -282,59 +496,176 @@
           </select>
         </div>
         <div class="field">
-          <label><span class="ar">هل يوجد عينة؟</span> Sample? <span class="required">*</span></label>
+          <label><span class="ar">هل يوجد عينة للعميل؟</span> Sample Available? <span class="required">*</span></label>
           <select id="hasSample" required>
-            <option value="">-- اختر --</option>
+            <option value="">-- اختر | Select --</option>
             <option value="نعم | Yes">نعم | Yes</option>
             <option value="لا | No">لا | No</option>
           </select>
         </div>
       </div>
 
+      <!-- Order Lines -->
       <div id="orderLines"></div>
 
-      <button type="button" onclick="addLine()" style="margin-top:14px; width:100%; padding:12px; border:2px dashed var(--accent2); background:transparent; color:var(--accent2); border-radius:10px; cursor:pointer; font-weight:700;">
-        ＋ إضافة صنف آخر | Add Item
+      <!-- Add Item Button -->
+      <button type="button" onclick="addLine()" style="
+        margin-top:14px; width:100%; padding:12px;
+        border:2px dashed var(--accent2); background:transparent;
+        color:var(--accent2); border-radius:10px; font-family:'Cairo',sans-serif;
+        font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s;">
+        ＋ &nbsp; إضافة صنف آخر | Add Another Item
       </button>
 
-      <div class="grand-total">
-        <div class="label">إجمالي الطلب | Grand Total</div>
+      <!-- Grand Total -->
+      <div class="grand-total" style="margin-top:20px;">
+        <div class="label">
+          <span>Grand Total | الإجمالي الكلي</span>
+          المبلغ الإجمالي
+        </div>
         <div class="amount" id="grandTotal">0.00</div>
       </div>
     </div>
   </div>
 
+  <!-- Submit -->
   <div class="submit-area">
-    <button class="btn-submit" onclick="submitForm()">✅ تأكيد وإرسال الطلب</button>
+    <button class="btn-submit" onclick="submitForm()">
+      ✅ &nbsp; تأكيد الطلب &nbsp;|&nbsp; Submit Order
+    </button>
   </div>
+  <div class="export-area">
+    <button class="btn-export" onclick="exportCSV()">
+      ⬇️ &nbsp; تصدير Excel / CSV
+    </button>
+  </div>
+
 </div>
 
+<!-- Success Overlay -->
 <div class="success-overlay" id="successOverlay">
   <div class="success-box">
-    <div style="font-size: 50px; color: var(--success);">✓</div>
-    <h3>تم الإرسال بنجاح!</h3>
-    <p>تم تسجيل الطلب في قاعدة البيانات.</p>
-    <button onclick="location.reload()" style="margin-top:20px; padding:10px 20px; background:var(--primary); color:white; border:none; border-radius:5px; cursor:pointer;">طلب جديد</button>
+    <div class="success-icon">✓</div>
+    <h3>تم إرسال الطلب! | Order Submitted!</h3>
+    <p>تم تسجيل الطلب بنجاح وسيظهر في الشيت فوراً.<br>Order recorded successfully.</p>
+    <button class="btn-new" onclick="resetForm()">طلب جديد | New Order</button>
   </div>
 </div>
 
 <script>
-const scriptURL = 'https://script.google.com/macros/s/AKfycbwjU6cs5CCAsg7Aqh76u0OWVOMi1z8dnZAuDkWa3yhPsRI4vLkeuhy2wCJFHBZ0r11fBw/exec';
-
+// =====================
+// Products Data
+// =====================
 const products = [
-  { en: "Saco Cup 16oz Clear", ar: "كوب ساكو 16 أوز شفاف", unit: "pcs", hasPrice: true, category: "cup" },
-  { en: "Saco Cup 12oz Clear", ar: "كوب ساكو 12 أوز شفاف", unit: "pcs", hasPrice: true, category: "cup" },
-  { en: "PET Cup 400ml Printed", ar: "كوب PET 400مل مطبوع", unit: "pcs", hasPrice: true, category: "cup" },
-  { en: "Paper Cup 8oz", ar: "جلاص ورقي 8 أوز", unit: "pcs", hasPrice: true, category: "paper" },
-  { en: "Cliche", ar: "كليشة", unit: "pcs", hasPrice: true, category: "cliche" }
+  // Cups
+  { en: "Saco Cup 16oz Clear",               ar: "كوب ساكو 16 أوز شفاف",           unit: "pcs", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 12oz Clear",               ar: "كوب ساكو 12 أوز شفاف",           unit: "pcs", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 22oz Clear",               ar: "كوب ساكو 22 أوز شفاف",           unit: "pcs", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 16oz Printed",             ar: "كوب ساكو 16 أوز مطبوع",          unit: "pcs", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 12oz Printed",             ar: "كوب ساكو 12 أوز مطبوع",          unit: "pcs", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 22oz Printed",             ar: "كوب ساكو 22 أوز مطبوع",          unit: "pcs", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 16oz Clear U",             ar: "كوب ساكو 16 أوز شفاف يو",        unit: "pcs", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 12oz Clear U",             ar: "كوب ساكو 12 أوز شفاف يو",        unit: "pcs", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 22oz Clear U",             ar: "كوب ساكو 22 أوز شفاف يو",        unit: "pcs", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 14oz Clear U",             ar: "كوب ساكو 14 أوز شفاف يو",        unit: "pcs", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 16oz Printed U",           ar: "كوب ساكو 16 أوز مطبوع يو",       unit: "pcs", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 12oz Printed U",           ar: "كوب ساكو 12 أوز مطبوع يو",       unit: "pcs", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 22oz Printed U",           ar: "كوب ساكو 22 أوز مطبوع يو",       unit: "pcs", hasPrice: true,  category: "cup" },
+  { en: "Saco Cup 14oz Printed U",           ar: "كوب ساكو 14 أوز مطبوع يو",       unit: "pcs", hasPrice: true,  category: "cup" },
+  { en: "PET Cup 400ml U-Shape Printed",     ar: "كوب PET 400مل يو شيب مطبوع",    unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "PET Cup 500ml U-Shape Printed",     ar: "كوب PET 500مل يو شيب مطبوع",    unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "PET Cup 700ml U-Shape Printed",     ar: "كوب PET 700مل يو شيب مطبوع",    unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "PET Cup 400ml (14oz) Printed",      ar: "كوب PET 400مل 14أوز مطبوع",     unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "Frosted Cup 360ml U-Shape Printed", ar: "كوب مشبر 360مل يو شيب مطبوع",   unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "Frosted Cup 500ml U-Shape Printed", ar: "كوب مشبر 500مل يو شيب مطبوع",   unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "Frosted Cup 700ml U-Shape Printed", ar: "كوب مشبر 700مل يو شيب مطبوع",   unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "Frosted Cup 360ml Printed",         ar: "كوب مشبر 360مل مطبوع",           unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "Frosted Cup 500ml Printed",         ar: "كوب مشبر 500مل مطبوع",           unit: "pcs",    hasPrice: true,  category: "cup" },
+  { en: "Frosted Cup 700ml Printed",         ar: "كوب مشبر 700مل مطبوع",           unit: "pcs",    hasPrice: true,  category: "cup" },
+  // Lids | غطيان
+  { en: "Pet Dom",         ar: "غطا قبة",             unit: "pcs", hasPrice: false, category: "lid" },
+  { en: "Pet Flat",        ar: "غطا فلات",            unit: "pcs", hasPrice: false, category: "lid" },
+  { en: "Pet S Black with Heart", ar: "غطا أسود مع قلب", unit: "pcs", hasPrice: false, category: "lid" },
+  { en: "Pet Clear with Heart",   ar: "غطا شفاف مع قلب", unit: "pcs", hasPrice: false, category: "lid" },
+  { en: "Injection Dom",   ar: "غطا قلة انجيكشن",    unit: "pcs", hasPrice: false, category: "lid" },
+  { en: "Frosted Lid",     ar: "غطا مشبر بسلك",       unit: "pcs", hasPrice: false, category: "lid" },
+  { en: "Saco Ice Cream Cup 8oz Clear",    ar: "كوب آيس كريم ساكو 8 أوز شفاف",   unit: "pcs", hasPrice: true, category: "cup" },
+  { en: "Saco Ice Cream Cup 8oz Printed",  ar: "كوب آيس كريم ساكو 8 أوز مطبوع",  unit: "pcs", hasPrice: true, category: "cup" },
+  // Paper Cups | أكواب ورقية
+  { en: "Paper Cup 4oz",   ar: "جلاص ورقي 4 أوز",     unit: "pcs", hasPrice: true,  category: "paper" },
+  { en: "Paper Cup 8oz",   ar: "جلاص ورقي 8 أوز",     unit: "pcs", hasPrice: true,  category: "paper" },
+  { en: "Paper Cup 12oz",  ar: "جلاص ورقي 12 أوز",    unit: "pcs", hasPrice: true,  category: "paper" },
+  // Cliche | كليشة
+  { en: "Cliche",          ar: "كليشة",               unit: "pcs", hasPrice: true,  category: "cliche" },
 ];
 
-let lineCount = 0;
-
+// =====================
+// Product Type Filter
+// =====================
 function filterByType() {
+  const type = document.getElementById('productType').value;
+  // Reset all order lines when type changes
   document.getElementById('orderLines').innerHTML = '';
   lineCount = 0;
   addLine();
+}
+
+function getTypeFilter() {
+  const type = document.getElementById('productType').value;
+  if (!type) return null;
+  if (type.includes('PP')) return p => p.en.includes('Saco Cup') || p.en.includes('Ice Cream');
+  if (type.includes('PET')) return p => p.en.includes('PET');
+  if (type.includes('Frosted') || type.includes('مشبر')) return p => p.en.includes('Frosted') && !p.en.includes('Lid');
+  if (type.includes('ورق') || type.includes('Paper')) return p => p.category === 'paper';
+  return null;
+}
+
+// =====================
+// Lids list
+// =====================
+const lids = [
+  { en: "Pet Dom",              ar: "غطا قبة" },
+  { en: "Pet Flat",             ar: "غطا فلات" },
+  { en: "Pet S Black with Heart", ar: "غطا أسود مع قلب" },
+  { en: "Pet Clear with Heart", ar: "غطا شفاف مع قلب" },
+  { en: "Injection Dom",        ar: "غطا قلة انجيكشن" },
+  { en: "Frosted Lid",          ar: "غطا مشبر بسلك" },
+];
+
+const cupProducts = products.filter(p => p.category === 'cup' || p.category === 'paper');
+const clicheProduct = products.find(p => p.category === 'cliche');
+
+let lineCount = 0;
+
+function needsLid(productEn) {
+  return productEn && !productEn.includes('Saco Cup') && !productEn.includes('Ice Cream');
+}
+
+function buildProductOptions() {
+  const typeFilter = getTypeFilter();
+  let filteredCups = typeFilter ? cupProducts.filter(typeFilter) : cupProducts;
+  const groups = [
+    { label: 'الأكواب | Cups', items: filteredCups },
+    { label: 'كليشة | Cliché', items: [clicheProduct] },
+  ];
+  let html = '<option value="">-- اختر الصنف | Select Product --</option>';
+  groups.forEach(g => {
+    if (g.items.length === 0) return;
+    html += `<optgroup label="${g.label}">`;
+    g.items.forEach(p => {
+      html += `<option value="${p.en}" data-ar="${p.ar}" data-unit="${p.unit}" data-hasprice="${p.hasPrice}">${p.ar} | ${p.en} (${p.unit})</option>`;
+    });
+    html += '</optgroup>';
+  });
+  return html;
+}
+
+function buildLidOptions() {
+  let html = '<option value="">-- بدون غطا | No Lid --</option>';
+  lids.forEach(l => {
+    html += `<option value="${l.en}">${l.ar} | ${l.en}</option>`;
+  });
+  return html;
 }
 
 function addLine() {
@@ -343,85 +674,382 @@ function addLine() {
   const div = document.createElement('div');
   div.id = `line_${id}`;
   div.style.cssText = 'background:#f9fbfd; border:1.5px solid var(--border); border-radius:12px; padding:16px; margin-bottom:12px; position:relative;';
-  
-  let options = '<option value="">-- اختر الصنف --</option>';
-  products.forEach(p => {
-    options += `<option value="${p.en}" data-ar="${p.ar}" data-unit="${p.unit}">${p.ar} | ${p.en}</option>`;
-  });
-
   div.innerHTML = `
-    <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:10px;">
-      <select id="prod_${id}" onchange="calcGrandTotal()">${options}</select>
-      <input type="number" id="qty_${id}" placeholder="الكمية" oninput="calcGrandTotal()">
-      <input type="number" id="price_${id}" placeholder="السعر" step="0.01" oninput="calcGrandTotal()">
+    <button onclick="removeLine(${id})" style="position:absolute; top:10px; left:10px;
+      background:var(--danger); color:white; border:none; border-radius:50%; width:24px; height:24px;
+      font-size:14px; cursor:pointer; line-height:24px; text-align:center;">✕</button>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:10px;">
+      <div class="field" style="grid-column:1/-1;">
+        <label style="font-size:11px; font-weight:700; color:var(--muted); font-family:'Barlow',sans-serif; text-transform:uppercase; letter-spacing:0.8px;">
+          <span style="font-family:'Cairo',sans-serif; font-size:13px; text-transform:none; color:var(--text); font-weight:600;">الصنف</span> Product
+        </label>
+        <select id="prod_${id}" onchange="onProductChange(${id})" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:'Cairo',sans-serif; font-size:13px; color:var(--text); background:white; outline:none;">
+          ${buildProductOptions()}
+        </select>
+      </div>
+
+      <div class="field">
+        <label style="font-size:11px; font-weight:700; color:var(--muted); font-family:'Barlow',sans-serif; text-transform:uppercase;">
+          <span style="font-family:'Cairo',sans-serif; font-size:13px; text-transform:none; color:var(--text); font-weight:600;">الكمية</span> Qty
+        </label>
+        <input type="number" id="qty_${id}" min="0" placeholder="0" oninput="calcLine(${id})"
+          style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:'Barlow',sans-serif; font-size:15px; text-align:center; outline:none;">
+      </div>
+
+      <div class="field" id="priceField_${id}">
+        <label style="font-size:11px; font-weight:700; color:var(--muted); font-family:'Barlow',sans-serif; text-transform:uppercase;">
+          <span style="font-family:'Cairo',sans-serif; font-size:13px; text-transform:none; color:var(--text); font-weight:600;">السعر</span> Price
+        </label>
+        <input type="number" id="price_${id}" min="0" step="0.01" placeholder="0.00" oninput="calcLine(${id})"
+          style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:'Barlow',sans-serif; font-size:15px; text-align:center; outline:none;">
+      </div>
+    </div>
+
+    <!-- Lid section (hidden by default) -->
+    <div id="lidSection_${id}" style="display:none; margin-top:8px; padding-top:10px; border-top:1px dashed var(--border);">
+      <div class="field">
+        <label style="font-size:11px; font-weight:700; color:var(--accent2); font-family:'Barlow',sans-serif; text-transform:uppercase; letter-spacing:0.8px;">
+          <span style="font-family:'Cairo',sans-serif; font-size:13px; text-transform:none; color:var(--accent2); font-weight:700;">الغطا</span> Lid (اختياري | Optional)
+        </label>
+        <select id="lid_${id}" style="width:100%; padding:11px 14px; border:1.5px solid var(--accent2); border-radius:10px; font-family:'Cairo',sans-serif; font-size:13px; color:var(--text); background:white; outline:none;">
+          ${buildLidOptions()}
+        </select>
+      </div>
+      <div class="field" style="margin-top:10px;">
+        <label style="font-size:11px; font-weight:700; color:var(--muted); font-family:'Barlow',sans-serif; text-transform:uppercase;">
+          <span style="font-family:'Cairo',sans-serif; font-size:13px; text-transform:none; color:var(--text); font-weight:600;">كمية الغطا</span> Lid Qty
+        </label>
+        <input type="number" id="lidQty_${id}" min="0" placeholder="0"
+          style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:'Barlow',sans-serif; font-size:15px; text-align:center; outline:none;">
+      </div>
+    </div>
+
+    <div style="text-align:left; margin-top:8px; font-size:13px; font-weight:700; color:var(--success);">
+      الإجمالي | Total: <span id="lineTotal_${id}">—</span>
     </div>
   `;
   container.appendChild(div);
+}
+
+function removeLine(id) {
+  const el = document.getElementById(`line_${id}`);
+  if (el) el.remove();
+  calcGrandTotal();
+}
+
+function onProductChange(id) {
+  const sel = document.getElementById(`prod_${id}`);
+  const opt = sel.options[sel.selectedIndex];
+  const hasPrice = opt.dataset.hasprice === 'true';
+  const productEn = opt.value;
+
+  // Show/hide price
+  const pf = document.getElementById(`priceField_${id}`);
+  if (hasPrice) {
+    pf.style.display = '';
+  } else {
+    pf.style.display = 'none';
+    document.getElementById(`price_${id}`).value = '0';
+  }
+
+  // Show/hide lid
+  const lidSec = document.getElementById(`lidSection_${id}`);
+  lidSec.style.display = needsLid(productEn) ? '' : 'none';
+
+  calcLine(id);
+}
+
+function calcLine(id) {
+  const qty   = parseFloat(document.getElementById(`qty_${id}`).value)   || 0;
+  const price = parseFloat(document.getElementById(`price_${id}`).value) || 0;
+  const total = qty * price;
+  const cell  = document.getElementById(`lineTotal_${id}`);
+  cell.textContent = total > 0 ? total.toFixed(2) : '—';
+  calcGrandTotal();
 }
 
 function calcGrandTotal() {
   let grand = 0;
   document.querySelectorAll('[id^="line_"]').forEach(line => {
     const id = line.id.replace('line_', '');
-    const qty = parseFloat(document.getElementById(`qty_${id}`).value) || 0;
-    const price = parseFloat(document.getElementById(`price_${id}`).value) || 0;
+    const qty   = parseFloat(document.getElementById(`qty_${id}`)?.value)   || 0;
+    const price = parseFloat(document.getElementById(`price_${id}`)?.value) || 0;
     grand += qty * price;
   });
   document.getElementById('grandTotal').textContent = grand.toFixed(2);
 }
 
-function submitForm() {
-  const date = document.getElementById('orderDate').value;
-  const rep = document.getElementById('salesRep').value;
-  const customer = document.getElementById('customerName').value;
-  const cliche = document.getElementById('clicheStatus').value;
-  const productType = document.getElementById('productType').value;
-  const hasSample = document.getElementById('hasSample').value;
-  const notes = document.getElementById('notes').value;
+// =====================
+// Set today's date
+// =====================
+function setToday() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('orderDate').value = today;
+}
 
-  if (!date || !rep || !customer) { alert('أكمل البيانات الأساسية'); return; }
+// =====================
+// Submit
+// =====================
+function submitForm() {
+  const date        = document.getElementById('orderDate').value;
+  const rep         = document.getElementById('salesRep').value;
+  const customer    = document.getElementById('customerName').value;
+  const cliche      = document.getElementById('clicheStatus').value;
+  const productType = document.getElementById('productType').value;
+  const hasSample   = document.getElementById('hasSample').value;
+  const notes       = document.getElementById('notes').value;
+
+  if (!date || !rep || !customer || !cliche || !productType || !hasSample) {
+    alert('يرجى تعبئة جميع الحقول الإلزامية |\nPlease fill all required fields.');
+    return;
+  }
+
+  saveCustomer(customer);
 
   const rows = [];
   document.querySelectorAll('[id^="line_"]').forEach(line => {
     const id = line.id.replace('line_', '');
     const sel = document.getElementById(`prod_${id}`);
-    if (!sel.value) return;
-    
+    const productEn = sel?.value;
+    if (!productEn) return;
     const opt = sel.options[sel.selectedIndex];
-    const qty = document.getElementById(`qty_${id}`).value;
-    const price = document.getElementById(`price_${id}`).value;
+    const unit = opt.dataset.unit;
+    const qty   = document.getElementById(`qty_${id}`)?.value || '0';
+    const price = document.getElementById(`price_${id}`)?.value || '0';
+    if (parseFloat(qty) <= 0) return;
 
     rows.push({
       date, rep, customer, cliche, productType, hasSample,
       delivery: '10-15 Days | يوم',
-      product: `${opt.dataset.ar} | ${sel.value}`,
+      product: `${opt.dataset.ar} | ${productEn} (${unit})`,
       qty, price,
       total: (parseFloat(qty) * parseFloat(price)).toFixed(2),
       notes
     });
+
+    // Add lid row if selected
+    const lidSec = document.getElementById(`lidSection_${id}`);
+    if (lidSec && lidSec.style.display !== 'none') {
+      const lidSel = document.getElementById(`lid_${id}`);
+      const lidVal = lidSel?.value;
+      const lidQty = document.getElementById(`lidQty_${id}`)?.value || '0';
+      if (lidVal && parseFloat(lidQty) > 0) {
+        const lidAr = lids.find(l => l.en === lidVal)?.ar || lidVal;
+        rows.push({
+          date, rep, customer, cliche, productType, hasSample,
+          delivery: '10-15 Days | يوم',
+          product: `${lidAr} | ${lidVal} (pcs) - غطا`,
+          qty: lidQty, price: '0',
+          total: '0',
+          notes: ''
+        });
+      }
+    }
   });
 
-  if (rows.length === 0) { alert('أضف صنف واحد على الأقل'); return; }
+  if (rows.length === 0) {
+    alert('يرجى إضافة صنف واحد على الأقل |\nPlease add at least one item.');
+    return;
+  }
 
-  fetch(scriptURL, {
+  const existing = JSON.parse(localStorage.getItem('orders') || '[]');
+  rows.forEach(r => existing.push(r));
+  localStorage.setItem('orders', JSON.stringify(existing));
+
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0omZe6sZMD7Ht3lEtNQknMTS7LRms8O61LWu91_79f7nRc2WijgIrp_X3acbUsS40QQ/exec';
+  const btn = document.querySelector('.btn-submit');
+  btn.innerHTML = '⏳ &nbsp; جاري الإرسال...';
+  btn.disabled = true;
+
+  fetch(SCRIPT_URL, {
     method: 'POST',
     mode: 'no-cors',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ rows: rows })
+    body: JSON.stringify({ rows })
   })
-  .then(() => {
+  .finally(() => {
+    btn.innerHTML = '✅ &nbsp; تأكيد الطلب &nbsp;|&nbsp; Submit Order';
+    btn.disabled = false;
     document.getElementById('successOverlay').classList.add('show');
-  })
-  .catch(err => alert('خطأ في الإرسال: ' + err.message));
+  });
 }
 
-// تشغيل أول سطر تلقائياً
-window.onload = () => {
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('orderDate').value = today;
+// =====================
+// Reset
+// =====================
+function resetForm() {
+  document.getElementById('successOverlay').classList.remove('show');
+  document.getElementById('salesRep').value = '';
+  document.getElementById('customerName').value = '';
+  document.getElementById('clicheStatus').value = '';
+  document.getElementById('productType').value = '';
+  document.getElementById('hasSample').value = '';
+  document.getElementById('notes').value = '';
+  document.getElementById('orderLines').innerHTML = '';
+  document.getElementById('grandTotal').textContent = '0.00';
+  lineCount = 0;
+  setToday();
   addLine();
-};
-</script>
+}
 
+// =====================
+// Export CSV
+// =====================
+function exportCSV() {
+  const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+  if (orders.length === 0) {
+    alert('لا توجد طلبات بعد | No orders yet. Submit an order first.');
+    return;
+  }
+
+  const headers = [
+    'Order Date | تاريخ الطلب',
+    'Sales Rep | المندوب',
+    'Customer | العميل',
+    'Cliché Status | حالة الكليشة',
+    'Product Type | نوع المنتج',
+    'Sample | عينة',
+    'Delivery | التسليم',
+    'Product | المنتج',
+    'Qty | الكمية',
+    'Price | السعر',
+    'Total | الإجمالي',
+    'Notes | ملاحظات'
+  ];
+
+  const csvRows = [headers.join(',')];
+  orders.forEach(o => {
+    csvRows.push([
+      o.date, `"${o.rep}"`, `"${o.customer}"`, `"${o.cliche || ''}"`, `"${o.productType || ''}"`, `"${o.hasSample || ''}"`, `"${o.delivery}"`,
+      `"${o.product}"`, o.qty, o.price, o.total, `"${o.notes || ''}"`
+    ].join(','));
+  });
+
+  const blob = new Blob(['\uFEFF' + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `orders_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+}
+
+// =====================
+// Company Name Autocomplete (per product)
+// =====================
+let companies = JSON.parse(localStorage.getItem('companies') || '[]');
+
+function saveCompany(name) {
+  name = name.trim();
+  if (name && !companies.includes(name)) {
+    companies.push(name);
+    companies.sort();
+    localStorage.setItem('companies', JSON.stringify(companies));
+  }
+}
+
+function filterCompanies(i) {
+  const val = document.getElementById(`company_${i}`).value.trim();
+  const filtered = val.length === 0
+    ? companies
+    : companies.filter(c => c.toLowerCase().includes(val.toLowerCase()));
+  renderCompanyDropdown(i, filtered, val);
+}
+
+function showCompanyDropdown(i) {
+  const val = document.getElementById(`company_${i}`).value.trim();
+  const filtered = val.length === 0 ? companies : companies.filter(c => c.toLowerCase().includes(val.toLowerCase()));
+  renderCompanyDropdown(i, filtered, val);
+}
+
+function hideCompanyDropdown(i) {
+  setTimeout(() => {
+    const d = document.getElementById(`companyDrop_${i}`);
+    if (d) d.style.display = 'none';
+  }, 200);
+}
+
+function renderCompanyDropdown(i, filtered, query) {
+  const dropdown = document.getElementById(`companyDrop_${i}`);
+  if (!dropdown || filtered.length === 0) { if(dropdown) dropdown.style.display = 'none'; return; }
+  dropdown.innerHTML = filtered.map(c => {
+    const hl = query
+      ? c.replace(new RegExp(`(${query})`, 'gi'), '<strong style="color:var(--accent2)">$1</strong>')
+      : c;
+    return `<div onmousedown="selectCompany(${i}, '${c.replace(/'/g, "\'")}')" style="
+      padding:7px 10px; cursor:pointer; border-bottom:1px solid var(--border);
+      transition:background 0.15s;" onmouseenter="this.style.background='#eaf4fb'"
+      onmouseleave="this.style.background='white'">${hl}</div>`;
+  }).join('');
+  dropdown.style.display = 'block';
+}
+
+function selectCompany(i, name) {
+  const el = document.getElementById(`company_${i}`);
+  if (el) el.value = name;
+  const d = document.getElementById(`companyDrop_${i}`);
+  if (d) d.style.display = 'none';
+}
+
+// =====================
+// Customer Autocomplete
+// =====================
+let customers = JSON.parse(localStorage.getItem('customers') || '[]');
+
+function saveCustomer(name) {
+  name = name.trim();
+  if (name && !customers.includes(name)) {
+    customers.push(name);
+    customers.sort();
+    localStorage.setItem('customers', JSON.stringify(customers));
+  }
+}
+
+function filterCustomers() {
+  const val = document.getElementById('customerName').value.trim();
+  const filtered = val.length === 0
+    ? customers
+    : customers.filter(c => c.toLowerCase().includes(val.toLowerCase()));
+  renderDropdown(filtered, val);
+}
+
+function showDropdown() {
+  const val = document.getElementById('customerName').value.trim();
+  const filtered = val.length === 0 ? customers : customers.filter(c => c.toLowerCase().includes(val.toLowerCase()));
+  renderDropdown(filtered, val);
+}
+
+function hideDropdown() {
+  setTimeout(() => {
+    document.getElementById('customerDropdown').style.display = 'none';
+  }, 200);
+}
+
+function renderDropdown(filtered, query) {
+  const dropdown = document.getElementById('customerDropdown');
+  if (filtered.length === 0) { dropdown.style.display = 'none'; return; }
+  dropdown.innerHTML = filtered.map(c => {
+    const hl = query
+      ? c.replace(new RegExp(`(${query})`, 'gi'), '<strong style="color:var(--accent2)">$1</strong>')
+      : c;
+    return `<div onmousedown="selectCustomer('${c.replace(/'/g,"\\'")}')" style="
+      padding:10px 14px; cursor:pointer; font-size:14px; border-bottom:1px solid var(--border);
+      transition:background 0.15s;" onmouseenter="this.style.background='#eaf4fb'"
+      onmouseleave="this.style.background='white'">${hl}</div>`;
+  }).join('');
+  dropdown.style.display = 'block';
+}
+
+function selectCustomer(name) {
+  document.getElementById('customerName').value = name;
+  document.getElementById('customerDropdown').style.display = 'none';
+}
+
+// =====================
+// Init
+// =====================
+setToday();
+addLine();
+</script>
 </body>
 </html>
