@@ -857,7 +857,7 @@ function submitForm() {
   rows.forEach(r => existing.push(r));
   localStorage.setItem('orders', JSON.stringify(existing));
 
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0omZe6sZMD7Ht3lEtNQknMTS7LRms8O61LWu91_79f7nRc2WijgIrp_X3acbUsS40QQ/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFZH0USlvYii_3NhqodkHFn-RCRpg6t6xgomuFnLGEAfSVFfjnReywC2-s_CVvUbpLgA/exec';
   const btn = document.querySelector('.btn-submit');
   btn.innerHTML = '⏳ &nbsp; جاري الإرسال...';
   btn.disabled = true;
